@@ -4,7 +4,6 @@ import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.usuarios.dto.response.UsuarioResponse;
 import com.enterprise.posapp.usuarios.mapper.UsuarioMapper;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
-
 import io.micrometer.common.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ public class UsuarioRepositoryJpa implements UsuarioRepository {
     public void save(Usuarios usuario) {
         jpaRepository.save(usuario);
     }
+
 
     @Override
     public Optional<UsuarioResponse> findById(long id) {
@@ -45,7 +45,7 @@ public class UsuarioRepositoryJpa implements UsuarioRepository {
     @Override
     public Optional<UsuarioResponse> findByUsername(@NonNull String nombre) {
         return Optional.of(jpaRepository.findByUsername(nombre)
-                        .map(UsuarioMapper::toDTO)
+                .map(UsuarioMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado.")));
     }
 }

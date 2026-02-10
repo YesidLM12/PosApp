@@ -15,5 +15,7 @@ public interface UsuarioRepository {
 
 	Page<UsuarioResponse> getUsers(Pageable pageable);
 
-	Optional<UsuarioResponse> findByUsername(String nombre);
+	Optional<Usuarios> findByUsernameEntity(String username);
+
+	Optional<UsuarioResponse> findByUsername(String username);
 }

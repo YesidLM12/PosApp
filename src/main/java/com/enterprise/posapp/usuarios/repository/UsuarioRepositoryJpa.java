@@ -16,32 +16,36 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class UsuarioRepositoryJpa implements UsuarioRepository {
-	private final UsuarioJpaRepository jpaRepository;
+    private final UsuarioJpaRepository jpaRepository;
 
-	@Override
-	public void save(Usuarios usuario) {
-		jpaRepository.save(usuario);
-	}
+    @Override
+    public void save(Usuarios usuario) {
+        jpaRepository.save(usuario);
+    }
 
-	@Override
-	public Optional<UsuarioResponse> findById(long id) {
-		return Optional.ofNullable(
-				jpaRepository.findById(id)
-						.map(UsuarioMapper::toDTO)
-						.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado")));
-	}
+    @Override
+    public Optional<UsuarioResponse> findById(long id) {
+        return Optional.of(
+                jpaRepository.findById(id)
+                        .map(UsuarioMapper::toDTO)
+                        .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado")));
+    }
 
-	@Override
-	public Page<UsuarioResponse> getUsers(Pageable pageable) {
-		return jpaRepository.findAll(pageable)
-				.map(UsuarioMapper::toDTO);
-	}
+    @Override
+    public Page<UsuarioResponse> getUsers(Pageable pageable) {
+        return jpaRepository.findAll(pageable)
+                .map(UsuarioMapper::toDTO);
+    }
 
-	@Override
-	public Optional<UsuarioResponse> findByUsername(@NonNull String nombre) {
-		return Optional.ofNullable(
-				jpaRepository.findByUsername(nombre)
-						.map(UsuarioMapper::toDTO)
-						.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado")));
-	}
+    @Override
+    public Optional<Usuarios> findByUsernameEntity(String username) {
+        return jpaRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<UsuarioResponse> findByUsername(@NonNull String nombre) {
+        return Optional.of(jpaRepository.findByUsername(nombre)
+                        .map(UsuarioMapper::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado.")));
+    }
 }

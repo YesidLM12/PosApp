@@ -3,6 +3,7 @@ package com.enterprise.posapp.usuarios.mapper;
 import com.enterprise.posapp.usuarios.dto.request.UsuarioRequest;
 import com.enterprise.posapp.usuarios.dto.response.UsuarioResponse;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
+import com.enterprise.posapp.usuarios.repository.RolRepositoryJpa;
 
 import java.time.LocalDateTime;
 

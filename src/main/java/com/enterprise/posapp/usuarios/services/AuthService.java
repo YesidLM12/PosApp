@@ -54,7 +54,7 @@ public class AuthService {
             Usuarios usuario = Usuarios.builder()
                     .username(dto.username())
                     .password(passwordEncoder.encode(dto.password()))
-                    .rol(rolRepositoryJpa.findByRol(dto.rol()))
+                    .rol(rolRepositoryJpa.findByRol(dto.rol().getNombre()))
                     .activo(true)
                     .created_at(LocalDateTime.now())
                     .build();

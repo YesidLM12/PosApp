@@ -3,7 +3,9 @@ package com.enterprise.posapp.usuarios.repository;
 import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.usuarios.model.entity.Roles;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+@Repository
 @RequiredArgsConstructor
 public class RolRepositoryJpa implements RolRepository {
     private final RolJpaRepository rolJpaRepository;

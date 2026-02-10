@@ -34,12 +34,12 @@ public class AuthController {
         return authService.registrarUsuario(dto);
     }
 
+    @PostMapping("/login")
     @Operation(summary = "Login de usuarios")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Ingreso al sistema"),
             @ApiResponse(responseCode = "404", description = "usuario no existe en el sistema"),
     })
-    @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest dto) {
         return authService.login(dto);
     }

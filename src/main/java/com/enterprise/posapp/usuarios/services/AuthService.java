@@ -10,6 +10,7 @@ import com.enterprise.posapp.usuarios.repository.RolRepositoryJpa;
 import com.enterprise.posapp.usuarios.repository.UsuarioRepositoryJpa;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,7 +44,7 @@ public class AuthService {
         return new LoginResponse(token);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Map<String, String> registrarUsuario(@NonNull UsuarioRequest dto) {
         Optional<Usuarios> usuarioExistente = usuarioRepositoryJpa.findByUsernameEntity(dto.username());

@@ -24,6 +24,7 @@
 ---
 
 ## Sprint 1 – Autenticación y usuarios
+**Estado:** Completado  
 **Objetivo:** Controlar el acceso al sistema.
 
 ### Historias de Usuario

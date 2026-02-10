@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 public record UsuarioRequest (
 				String username,
 				String password,
-				Roles rol
+				String rol
 ) {
 }

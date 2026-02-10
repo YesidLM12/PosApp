@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,8 +20,18 @@ public class Roles {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Column(nullable = false, length = 50)
+	private String codigo;
+
 	@Column(nullable = false)
 	private String nombre;
+
+	private String descripcion;
+
+	@Column(nullable = false)
+	private boolean activo;
+
+	private LocalDateTime created_at;
 
 	@OneToMany(mappedBy = "rol")
 	private List<Usuarios> usuarios;

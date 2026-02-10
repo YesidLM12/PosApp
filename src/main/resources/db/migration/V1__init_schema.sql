@@ -3,8 +3,12 @@
 -- =========================
 CREATE TABLE roles
 (
-    id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL UNIQUE
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    codigo      VARCHAR(50) UNIQUE NOT NULL,
+    nombre      VARCHAR(50)        NOT NULL UNIQUE,
+    descripcion VARCHAR(255),
+    activo      BOOLEAN            NOT NULL,
+    created_at  TIMESTAMP
 );
 
 -- =========================

@@ -4,7 +4,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRINspringG_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: validate
     show-sql: false
     database-platform: org.hibernate.dialect.MySQLDialect
 

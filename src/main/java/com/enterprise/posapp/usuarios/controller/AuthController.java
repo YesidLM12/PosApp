@@ -38,6 +38,7 @@ public class AuthController {
     @Operation(summary = "Login de usuarios")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Ingreso al sistema"),
+            @ApiResponse(responseCode = "400", description = "Credenciales incorrectas"),
             @ApiResponse(responseCode = "404", description = "usuario no existe en el sistema"),
     })
     public LoginResponse login(@RequestBody LoginRequest dto) {

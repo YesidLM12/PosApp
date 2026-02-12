@@ -21,6 +21,7 @@
 ---
 
 ## Fase 1. Desarrollo del núcleo del sistema (MVP – Parte 1)
+**Estado:** Completado
 **Objetivo:** Habilitar el acceso al sistema y la operación básica.
 
 ### Alcance

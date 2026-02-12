@@ -43,6 +43,7 @@
 ---
 
 ## Sprint 2 – Gestión de menú
+**Estado:** Completado  
 **Objetivo:** Permitir administrar y consultar el menú.
 
 ### Historias de Usuario

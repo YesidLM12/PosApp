@@ -94,7 +94,7 @@ public class ProductoService {
 
     @PreAuthorize("hasAnyRole('MESERO', 'CAJERO')")
     public Page<ProductoResponse> obtenerTodosLosProductos(Pageable pageable) {
-        return productoRepositoryJpa.getProducts(pageable);
+       return productoRepositoryJpa.getProducts(pageable);
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UsuarioRepository {
     void save(Usuarios usuario);
 
-    Optional<UsuarioResponse> findById(long id);
+    Usuarios findById(long id);
 
     Page<UsuarioResponse> getUsers(Pageable pageable);
 

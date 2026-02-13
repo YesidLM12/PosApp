@@ -24,11 +24,9 @@ public class UsuarioRepositoryJpa implements UsuarioRepository {
 
 
     @Override
-    public Optional<UsuarioResponse> findById(long id) {
-        return Optional.of(
-                jpaRepository.findById(id)
-                        .map(UsuarioMapper::toDTO)
-                        .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado")));
+    public Usuarios findById(long id) {
+        return jpaRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
     }
 
     @Override

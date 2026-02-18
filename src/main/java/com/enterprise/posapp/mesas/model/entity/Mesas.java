@@ -1,9 +1,11 @@
 package com.enterprise.posapp.mesas.model.entity;
 
+import com.enterprise.posapp.ordenes.model.entity.Orden;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,4 +27,7 @@ public class Mesas {
 
     @Column(nullable = false)
     private LocalDateTime created_at = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "mesa")
+    private List<Orden> ordenes;
 }

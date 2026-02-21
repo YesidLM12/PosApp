@@ -1,5 +1,6 @@
 package com.enterprise.posapp.ordenes.model.entity;
 
+import com.enterprise.posapp.ordenes.service.OrdenService;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,4 +33,14 @@ public class OrdenItem {
     @ManyToOne
     @JoinColumn(name = "orden_id")
     private Orden orden;
+
+    public OrdenItem(Orden orden, Productos producto, int cantidad) {
+        this.orden = orden;
+        this.producto = producto;
+        this.cantidad = cantidad;
+    }
+
+    public void actualizarCantidad(int cantidad) {
+        setCantidad(cantidad);
+    }
 }

@@ -21,8 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Optional<Usuarios> usuario =Optional.of( usuarioRepository.findByUsernameEntity(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado")));
+        Optional<Usuarios> usuario = Optional.of(usuarioRepository.findByUsername(username));
         return new  UserDetailsImpl(usuario.orElse(null));
     }
 }

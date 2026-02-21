@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -29,8 +31,7 @@ public class ProductoRepositoryJpa implements ProductoRepository {
 
     @Override
     public Productos findByNombre(String nombre) {
-        return productoJpaRepository.findByNombre(nombre)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        return productoJpaRepository.findByNombre(nombre);
     }
 
     @Override

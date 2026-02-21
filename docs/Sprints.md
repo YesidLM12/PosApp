@@ -1,4 +1,5 @@
-# Plan de Sprints – Sistema POS para Restaurante
+
++# Plan de Sprints – Sistema POS para Restaurante
 
 ## Duración del Sprint
 - 2 semanas por sprint

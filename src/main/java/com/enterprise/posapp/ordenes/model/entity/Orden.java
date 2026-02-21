@@ -1,14 +1,16 @@
 package com.enterprise.posapp.ordenes.model.entity;
 
+import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
+import com.enterprise.posapp.productos.model.entity.Productos;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -42,6 +44,49 @@ public class Orden {
     @JoinColumn(name = "mesero_id")
     private Usuarios usuario;
 
-   @OneToMany(mappedBy = "orden")
+    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<OrdenItem> items;
+
+    public void agregarOActualizarProducto(Productos producto, int cantidad) {
+        abrirOrden();
+
+        Optional<OrdenItem> itemExistente = items.stream()
+                .filter(i -> i.getProducto().equals(producto))
+                .findFirst();
+
+        if (itemExistente.isPresent()) {
+            OrdenItem item = itemExistente.get();
+            item.actualizarCantidad(cantidad);
+
+            if (item.getCantidad() <= 0) {
+                items.remove(item);
+            }
+        } else {
+            if (cantidad > 0) {
+                OrdenItem nuevoItem = new OrdenItem(this, producto, cantidad);
+                agregarItem(nuevoItem);
+            }
+        }
+    }
+
+    public void validarOrden() {
+        if (estado.equals("CANCELADA") || estado.equals("CERRADA")) {
+            throw new ConflicException("No se puede modificar ni abrir la orden");
+        }
+    }
+
+    public void agregarItem(OrdenItem item) {
+        items.add(item);
+        item.setOrden(this);
+    }
+
+    public void cancelarOrden(){
+        setEstado("CANCELADA");
+    }
+
+    public void abrirOrden(){
+        validarOrden();
+
+        setEstado("ABIERTA");
+    }
 }

@@ -1,6 +1,7 @@
 package com.enterprise.posapp.productos.service;
 
 import com.enterprise.posapp.common.exceptions.ConflicException;
+import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.productos.dto.request.ProductoRequest;
 import com.enterprise.posapp.productos.dto.response.ProductoResponse;
 import com.enterprise.posapp.productos.model.entity.CategoriaRepositoryJpa;
@@ -50,7 +51,8 @@ public class ProductoService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Map<String, String> editarProducto(Long id, ProductoRequest dto) {
-        Productos productoExistente = productoRepositoryJpa.findById(id);
+        Productos productoExistente = productoRepositoryJpa.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
         try {
             if (dto.nombre() != null) {
@@ -78,7 +80,9 @@ public class ProductoService {
     @Transactional
     public Map<String, String> desactivarProducto(Long productoId) {
         try {
-            Productos producto = productoRepositoryJpa.findById(productoId);
+            Productos producto = productoRepositoryJpa.findById(productoId)
+                    .orElseThrow(() ->  new ResourceNotFoundException("Producto no encontrado"));
+
             productoRepositoryJpa.desactivarProducto(producto);
             productoRepositoryJpa.save(producto);
         } catch (Exception e) {

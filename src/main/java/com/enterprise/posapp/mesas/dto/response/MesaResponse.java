@@ -11,7 +11,7 @@ public record MesaResponse(
         int numero,
 
         @Schema(description = "Estado de la mesa", example = "Disponible")
-        String estado,
+        com.enterprise.posapp.mesas.model.enums.Estado estado,
 
         @Schema(description = "fecha de creación de mesa", defaultValue = "timeStap")
         LocalDateTime created_at

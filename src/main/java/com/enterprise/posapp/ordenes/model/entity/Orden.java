@@ -2,6 +2,7 @@ package com.enterprise.posapp.ordenes.model.entity;
 
 import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
+import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ public class Orden {
     private Long id;
 
     @Column(nullable = false, length = 30)
-    private String estado;
+    private EstadoOrden estado;
 
     @Column(nullable = false)
     private BigDecimal total;
@@ -46,6 +47,13 @@ public class Orden {
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<OrdenItem> items;
+
+    public void setTotal (BigDecimal total){
+        if (total.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ConflicException("El total no puede ser negativo");
+        }
+        this.total = total;
+    }
 
     public void agregarOActualizarProducto(Productos producto, int cantidad) {
         abrirOrden();
@@ -70,7 +78,10 @@ public class Orden {
     }
 
     public void validarOrden() {
-        if (estado.equals("CANCELADA") || estado.equals("CERRADA")) {
+        if (items.isEmpty())
+            throw  new ConflicException("La orden debe tener al menos un producto");
+
+        if (estado.equals(EstadoOrden.CERRADA) || estado.equals(EstadoOrden.CANCELADA)) {
             throw new ConflicException("No se puede modificar ni abrir la orden");
         }
     }
@@ -81,12 +92,11 @@ public class Orden {
     }
 
     public void cancelarOrden(){
-        setEstado("CANCELADA");
+        setEstado(EstadoOrden.CANCELADA);
     }
 
     public void abrirOrden(){
         validarOrden();
-
-        setEstado("ABIERTA");
+        setEstado(EstadoOrden.ABIERTA);
     }
 }

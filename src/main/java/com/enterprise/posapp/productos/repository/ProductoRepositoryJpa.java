@@ -24,9 +24,9 @@ public class ProductoRepositoryJpa implements ProductoRepository {
     }
 
     @Override
-    public Productos findById(Long id) {
-        return productoJpaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+    public Optional<Productos> findById(Long id) {
+        return Optional.of(productoJpaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado")));
     }
 
     @Override

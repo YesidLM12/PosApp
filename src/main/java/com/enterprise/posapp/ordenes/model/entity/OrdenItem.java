@@ -1,5 +1,6 @@
 package com.enterprise.posapp.ordenes.model.entity;
 
+import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.ordenes.service.OrdenService;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import jakarta.persistence.*;
@@ -42,5 +43,14 @@ public class OrdenItem {
 
     public void actualizarCantidad(int cantidad) {
         setCantidad(cantidad);
+    }
+
+    public BigDecimal calcularSubtotal() {
+        BigDecimal subtotal = precio_unitario.multiply(BigDecimal.valueOf(cantidad));
+
+        if (subtotal.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ConflicException("El total no puede ser negativo");
+        }
+        return subtotal;
     }
 }

@@ -1,22 +1,26 @@
 package com.enterprise.posapp.ordenes.service;
 
 import com.enterprise.posapp.common.exceptions.ConflicException;
+import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
+import com.enterprise.posapp.mesas.model.enums.Estado;
 import com.enterprise.posapp.mesas.repository.MesaRepositoryJpa;
 import com.enterprise.posapp.ordenes.dto.request.OrdenItemRequest;
 import com.enterprise.posapp.ordenes.dto.request.OrdenRequest;
 import com.enterprise.posapp.ordenes.model.entity.Orden;
 import com.enterprise.posapp.ordenes.model.entity.OrdenItem;
+import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
 import com.enterprise.posapp.ordenes.repository.OrdenItemRepositoryJpa;
 import com.enterprise.posapp.ordenes.repository.OrdenRepositoryJpa;
 import com.enterprise.posapp.productos.model.entity.Productos;
-import com.enterprise.posapp.productos.repository.ProductoJpaRepository;
+import com.enterprise.posapp.productos.repository.ProductoRepositoryJpa;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import com.enterprise.posapp.usuarios.repository.UsuarioRepositoryJpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +32,17 @@ public class OrdenService {
     private final OrdenItemRepositoryJpa ordenItemRepositoryJpa;
     private final MesaRepositoryJpa mesaRepositoryJpa;
     private final UsuarioRepositoryJpa usuarioRepositoryJpa;
-    private final ProductoJpaRepository productoJpaRepository;
+    private final ProductoRepositoryJpa productoRepositoryJpa;
 
-    List<OrdenItem> items = new ArrayList<>();
 
     @Transactional
     public void crearOrden(OrdenRequest dto) {
+        List<OrdenItem> items = new ArrayList<>();
+
         Usuarios mesero = usuarioRepositoryJpa.findByUsername(dto.mesero());
         Mesas mesa = mesaRepositoryJpa.findByNumberOfMesa(dto.mesa());
 
-        if (mesa.getEstado().equals("OCUPADA")) {
+        if (mesa.getEstado() != Estado.DISPONIBLE) {
             throw new ConflicException("Mesa no disponible");
         }
 
@@ -45,26 +50,30 @@ public class OrdenService {
                 .builder()
                 .created_at(LocalDateTime.now())
                 .usuario(mesero)
-                .estado("Activa")
-                .mesa(mesa)
+                .estado(EstadoOrden.ABIERTA)
                 .build();
 
+        BigDecimal total = BigDecimal.valueOf(0);
 
         for (OrdenItemRequest it : dto.items()) {
+            Productos producto = productoRepositoryJpa.findById(it.productoId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
             OrdenItem item = OrdenItem.builder()
                     .orden(orden)
-                    .producto(productoJpaRepository.findByNombre(it.productos().getNombre()))
+                    .producto(producto)
                     .cantidad(it.cantidad())
-                    .precio_unitario(it.productos().getPrecio())
+                    .precio_unitario(producto.getPrecio())
                     .build();
 
+            total = total.add(item.calcularSubtotal());
             items.add(item);
-            ordenItemRepositoryJpa.save(item);
         }
 
         orden.setItems(items);
-        orden.setEstado("EN PREPARACIÓN");
-        mesa.setEstado("OCUPADA");
+        orden.setTotal(total);
+        orden.setEstado(EstadoOrden.EN_PREPARACION);
+        mesa.setEstado(Estado.OCUPADA);
 
         ordenRepositoryJpa.save(orden);
         mesaRepositoryJpa.save(mesa);
@@ -73,10 +82,11 @@ public class OrdenService {
     @Transactional
     public void modificarOrden(OrdenItemRequest item) {
         Orden orden = ordenRepositoryJpa.findById(item.ordenId());
-        Productos producto = productoJpaRepository.findByNombre(item.productos().getNombre());
+        Productos producto = productoRepositoryJpa.findById(item.productoId())
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
         orden.agregarOActualizarProducto(producto, item.cantidad());
-
+        orden.setEstado(EstadoOrden.EN_PREPARACION);
         ordenRepositoryJpa.save(orden);
     }
 

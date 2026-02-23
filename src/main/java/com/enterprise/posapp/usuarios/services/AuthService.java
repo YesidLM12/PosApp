@@ -47,8 +47,8 @@ public class AuthService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Map<String, String> registrarUsuario(@NonNull UsuarioRequest dto) {
-        Optional<Usuarios> usuarioExistente = usuarioRepositoryJpa.findByUsernameEntity(dto.username());
-        if (usuarioExistente.isPresent())
+        Usuarios usuarioExistente = usuarioRepositoryJpa.findByUsername(dto.username());
+        if (usuarioExistente != null)
             throw new ConflicException("El usuario ya se encuentra registrado");
 
         try {

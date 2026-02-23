@@ -1,5 +1,6 @@
 package com.enterprise.posapp.usuarios.model.entity;
 
+import com.enterprise.posapp.usuarios.model.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Roles {
 	private String codigo;
 
 	@Column(nullable = false)
-	private String nombre;
+	private Rol nombre;
 
 	private String descripcion;
 

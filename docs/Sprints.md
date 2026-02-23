@@ -1,4 +1,5 @@
-# Plan de Sprints – Sistema POS para Restaurante
+
++# Plan de Sprints – Sistema POS para Restaurante
 
 ## Duración del Sprint
 - 2 semanas por sprint
@@ -62,6 +63,7 @@
 ---
 
 ## Sprint 3 – Mesas y órdenes
+**Estado:** Completado  
 **Objetivo:** Registrar pedidos por mesa.
 
 ### Historias de Usuario

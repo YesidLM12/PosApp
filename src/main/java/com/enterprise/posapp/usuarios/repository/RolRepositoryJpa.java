@@ -2,6 +2,7 @@ package com.enterprise.posapp.usuarios.repository;
 
 import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.usuarios.model.entity.Roles;
+import com.enterprise.posapp.usuarios.model.enums.Rol;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ public class RolRepositoryJpa implements RolRepository {
     }
 
     @Override
-    public Roles findByRol(String rol) {
+    public Roles findByRol(Rol rol) {
         return rolJpaRepository.findByNombre(rol)
                 .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado"));
     }

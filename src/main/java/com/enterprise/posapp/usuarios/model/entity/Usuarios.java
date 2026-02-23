@@ -1,9 +1,11 @@
 package com.enterprise.posapp.usuarios.model.entity;
 
+import com.enterprise.posapp.ordenes.model.entity.Orden;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +35,6 @@ public class Usuarios {
 	@JoinTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
 	private Roles rol;
 
+	@OneToMany(mappedBy = "usuario")
+	private List<Orden> ordenes;
 }

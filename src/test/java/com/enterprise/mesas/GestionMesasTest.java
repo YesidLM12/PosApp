@@ -75,25 +75,28 @@ class GestionMesasTest {
 
     @Test
     void noDebeCrearOrdenSiMesaEstaOcupada() {
-        OrdenItemRequest item = new OrdenItemRequest(
-                1L,
-                1,
-                3L
-        );
-        OrdenRequest dto = new OrdenRequest(
-                1,
-                "mesero1",
-                List.of(item)
-        );
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 3L);
+        OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
+
         Mesas mesa = new Mesas();
         mesa.setEstado(Estado.OCUPADA);
+
+        Usuarios mesero = new Usuarios();
+        mesero.setUsername("mesero1");
 
         when(mesaRepositoryJpa.findByNumberOfMesa(1))
                 .thenReturn(mesa);
 
-        assertThrows(ConflicException.class, () -> {
-            ordenService.crearOrden(dto);
-        });
+        when(usuarioRepositoryJpa.findByUsername(dto.mesero()))
+                .thenReturn(mesero);
+
+        ConflicException exception = assertThrows(
+                ConflicException.class,
+                () -> ordenService.crearOrden(dto)
+        );
+
+        System.out.println(exception.getMessage());
+        verify(ordenRepositoryJpa, never()).save(any());
     }
 
     @Test
@@ -119,6 +122,7 @@ class GestionMesasTest {
         ordenService.crearOrden(dto);
 
         assertEquals(Estado.OCUPADA, mesa.getEstado());
+        System.out.println(mesa.getEstado());
         verify(ordenRepositoryJpa).save(any(Orden.class));
     }
 
@@ -139,9 +143,12 @@ class GestionMesasTest {
         when(usuarioRepositoryJpa.findByUsername("mesero1"))
                 .thenReturn(new Usuarios());
 
-        assertThrows(ConflicException.class, () -> {
-            ordenService.crearOrden(dto);
-        });
+        ConflicException exception = assertThrows(
+                ConflicException.class,
+                () -> ordenService.crearOrden(dto)
+        );
+
+        System.out.println(exception.getMessage());
         verify(ordenRepositoryJpa, never()).save(any());
     }
 }

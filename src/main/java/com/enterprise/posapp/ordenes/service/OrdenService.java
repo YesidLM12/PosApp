@@ -105,4 +105,10 @@ public class OrdenService {
         ordenRepositoryJpa.save(orden);
     }
 
+    @Transactional
+    public void cerrarOrden(Long ordenId) {
+        Orden orden = ordenRepositoryJpa.findById(ordenId);
+        orden.validarCerrarOrden();
+        ordenRepositoryJpa.save(orden);
+    }
 }

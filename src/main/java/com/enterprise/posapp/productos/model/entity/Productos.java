@@ -29,4 +29,9 @@ public class Productos {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categorias categoria;
+
+
+    public void desactivarProducto(){
+        setActivo(false);
+    }
 }

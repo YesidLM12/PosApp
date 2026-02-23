@@ -15,8 +15,6 @@ public interface ProductoRepository {
 
     Productos findByNombre(String nombre);
 
-    void desactivarProducto(Productos producto);
-
     Page<ProductoResponse> getProducts(Pageable pageable);
 
     Page<ProductoResponse> getProductsEnabled(Pageable pageable);

@@ -4,7 +4,7 @@ import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.productos.dto.request.ProductoRequest;
 import com.enterprise.posapp.productos.dto.response.ProductoResponse;
-import com.enterprise.posapp.productos.model.entity.CategoriaRepositoryJpa;
+import com.enterprise.posapp.productos.repository.CategoriaRepositoryJpa;
 import com.enterprise.posapp.productos.model.entity.Categorias;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import com.enterprise.posapp.productos.repository.ProductoRepositoryJpa;
@@ -83,7 +83,7 @@ public class ProductoService {
             Productos producto = productoRepositoryJpa.findById(productoId)
                     .orElseThrow(() ->  new ResourceNotFoundException("Producto no encontrado"));
 
-            productoRepositoryJpa.desactivarProducto(producto);
+            producto.desactivarProducto();
             productoRepositoryJpa.save(producto);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -35,11 +35,6 @@ public class ProductoRepositoryJpa implements ProductoRepository {
     }
 
     @Override
-    public void desactivarProducto(@NonNull Productos producto) {
-        producto.setActivo(false);
-    }
-
-    @Override
     public Page<ProductoResponse> getProducts(Pageable pageable) {
         return productoJpaRepository.findAll(pageable)
                 .map(ProductoMapper::toResponse);

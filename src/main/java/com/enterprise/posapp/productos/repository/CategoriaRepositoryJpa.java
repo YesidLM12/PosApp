@@ -1,12 +1,9 @@
-package com.enterprise.posapp.productos.model.entity;
+package com.enterprise.posapp.productos.repository;
 
 import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
-import com.enterprise.posapp.productos.repository.CategoriaJpaRepository;
-import com.enterprise.posapp.productos.repository.CategoriaRepository;
+import com.enterprise.posapp.productos.model.entity.Categorias;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor

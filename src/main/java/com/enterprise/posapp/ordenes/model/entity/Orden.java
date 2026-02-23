@@ -38,18 +38,18 @@ public class Orden {
     private LocalDateTime closed_at;
 
     @ManyToOne
-    @JoinColumn(name = "mesa_id",nullable = false)
+    @JoinColumn(name = "mesa_id", nullable = false)
     private Mesas mesa;
 
 
     @ManyToOne
-    @JoinColumn(name = "mesero_id",nullable = false)
+    @JoinColumn(name = "mesero_id", nullable = false)
     private Usuarios usuario;
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<OrdenItem> items;
 
-    public void setTotal (BigDecimal total){
+    public void setTotal(BigDecimal total) {
         if (total.compareTo(BigDecimal.ZERO) < 0) {
             throw new ConflicException("El total no puede ser negativo");
         }
@@ -79,12 +79,13 @@ public class Orden {
     }
 
     public void validarOrden() {
-        if (items.isEmpty())
-            throw  new ConflicException("La orden debe tener al menos un producto");
-
         if (estado.equals(EstadoOrden.CERRADA) || estado.equals(EstadoOrden.CANCELADA)) {
-            throw new ConflicException("No se puede modificar ni abrir la orden");
+            throw new ConflicException("No se puede modificar ni abrir la orden en estado " + estado);
         }
+
+        if (items.isEmpty())
+            throw new ConflicException("La orden debe tener al menos un producto");
+
     }
 
     public void agregarItem(OrdenItem item) {
@@ -92,12 +93,24 @@ public class Orden {
         item.setOrden(this);
     }
 
-    public void cancelarOrden(){
+    public void cancelarOrden() {
         setEstado(EstadoOrden.CANCELADA);
     }
 
-    public void abrirOrden(){
+    public void abrirOrden() {
         validarOrden();
         setEstado(EstadoOrden.ABIERTA);
+    }
+
+    public void validarCerrarOrden() {
+        if (getItems().isEmpty())
+            throw new ConflicException("No se puede cerrar una orden sin productos");
+
+        if (estado.equals(EstadoOrden.CERRADA) || estado.equals(EstadoOrden.CANCELADA) || estado.equals(EstadoOrden.EN_PREPARACION)) {
+            throw new ConflicException("No se puede cerrar la orden. Estado de la orden: " + estado);
+        }
+
+        setEstado(EstadoOrden.CERRADA);
+        setClosed_at(LocalDateTime.now());
     }
 }

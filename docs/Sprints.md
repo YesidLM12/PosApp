@@ -63,6 +63,7 @@
 ---
 
 ## Sprint 3 – Mesas y órdenes
+**Estado:** Completado  
 **Objetivo:** Registrar pedidos por mesa.
 
 ### Historias de Usuario

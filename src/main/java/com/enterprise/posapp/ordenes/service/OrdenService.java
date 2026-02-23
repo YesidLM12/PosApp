@@ -36,7 +36,7 @@ public class OrdenService {
 
 
     @Transactional
-    public void crearOrden(OrdenRequest dto) {
+    public List<OrdenItem> crearOrden(OrdenRequest dto) {
         List<OrdenItem> items = new ArrayList<>();
 
         Usuarios mesero = usuarioRepositoryJpa.findByUsername(dto.mesero());
@@ -85,6 +85,8 @@ public class OrdenService {
 
         ordenRepositoryJpa.save(orden);
         mesaRepositoryJpa.save(mesa);
+
+        return items;
     }
 
     @Transactional

@@ -95,6 +95,7 @@ public class Orden {
 
     public void cancelarOrden() {
         setEstado(EstadoOrden.CANCELADA);
+        setClosed_at(LocalDateTime.now());
     }
 
     public void abrirOrden() {

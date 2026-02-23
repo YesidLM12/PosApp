@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrdenServiceTest {
+class GestionMesasTest {
     @Mock
     private UsuarioRepositoryJpa usuarioRepositoryJpa;
 
@@ -45,7 +45,6 @@ class OrdenServiceTest {
 
     @Mock
     private OrdenItemRepositoryJpa ordenItemRepositoryJpa;
-
     @InjectMocks
     private OrdenService ordenService;
 

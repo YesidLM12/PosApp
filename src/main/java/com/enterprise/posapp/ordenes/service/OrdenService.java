@@ -42,6 +42,13 @@ public class OrdenService {
         Usuarios mesero = usuarioRepositoryJpa.findByUsername(dto.mesero());
         Mesas mesa = mesaRepositoryJpa.findByNumberOfMesa(dto.mesa());
 
+        if (mesero == null)
+            throw new ConflicException("Mesero no existe");
+
+        if (mesa == null) {
+            throw new ConflicException("Mesa no existe");
+        }
+
         if (mesa.getEstado() != Estado.DISPONIBLE) {
             throw new ConflicException("Mesa no disponible");
         }
@@ -50,6 +57,7 @@ public class OrdenService {
                 .builder()
                 .created_at(LocalDateTime.now())
                 .usuario(mesero)
+                .mesa(mesa)
                 .estado(EstadoOrden.ABIERTA)
                 .build();
 

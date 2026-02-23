@@ -38,11 +38,12 @@ public class Orden {
     private LocalDateTime closed_at;
 
     @ManyToOne
-    @JoinColumn(name = "mesa_id")
+    @JoinColumn(name = "mesa_id",nullable = false)
     private Mesas mesa;
 
+
     @ManyToOne
-    @JoinColumn(name = "mesero_id")
+    @JoinColumn(name = "mesero_id",nullable = false)
     private Usuarios usuario;
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)

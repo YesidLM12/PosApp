@@ -96,6 +96,7 @@ CREATE TABLE orden_items
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     orden_id        BIGINT         NOT NULL,
     producto_id     BIGINT         NOT NULL,
+    observacion     VARCHAR(50),
     cantidad        INT            NOT NULL,
     precio_unitario NUMERIC(10, 2) NOT NULL,
     CONSTRAINT fk_item_orden

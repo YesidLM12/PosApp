@@ -7,6 +7,7 @@ import com.enterprise.posapp.mesas.model.enums.Estado;
 import com.enterprise.posapp.mesas.repository.MesaRepositoryJpa;
 import com.enterprise.posapp.ordenes.dto.request.OrdenItemRequest;
 import com.enterprise.posapp.ordenes.dto.request.OrdenRequest;
+import com.enterprise.posapp.ordenes.events.OrdenEnviadaACocinaEvent;
 import com.enterprise.posapp.ordenes.model.entity.Orden;
 import com.enterprise.posapp.ordenes.model.entity.OrdenItem;
 import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
@@ -17,6 +18,7 @@ import com.enterprise.posapp.productos.repository.ProductoRepositoryJpa;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import com.enterprise.posapp.usuarios.repository.UsuarioRepositoryJpa;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +31,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrdenService {
     private final OrdenRepositoryJpa ordenRepositoryJpa;
-    private final OrdenItemRepositoryJpa ordenItemRepositoryJpa;
     private final MesaRepositoryJpa mesaRepositoryJpa;
     private final UsuarioRepositoryJpa usuarioRepositoryJpa;
     private final ProductoRepositoryJpa productoRepositoryJpa;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
-    public List<OrdenItem> crearOrden(OrdenRequest dto) {
+    public void crearOrden(OrdenRequest dto) {
         List<OrdenItem> items = new ArrayList<>();
 
         Usuarios mesero = usuarioRepositoryJpa.findByUsername(dto.mesero());
@@ -70,6 +72,7 @@ public class OrdenService {
             OrdenItem item = OrdenItem.builder()
                     .orden(orden)
                     .producto(producto)
+                    .observacion(it.observacion())
                     .cantidad(it.cantidad())
                     .precio_unitario(producto.getPrecio())
                     .build();
@@ -80,13 +83,14 @@ public class OrdenService {
 
         orden.setItems(items);
         orden.setTotal(total);
-        orden.setEstado(EstadoOrden.EN_PREPARACION);
         mesa.setEstado(Estado.OCUPADA);
 
         ordenRepositoryJpa.save(orden);
         mesaRepositoryJpa.save(mesa);
 
-        return items;
+        eventPublisher.publishEvent(
+                new OrdenEnviadaACocinaEvent(orden.getId())
+        );
     }
 
     @Transactional

@@ -27,6 +27,9 @@ public class OrdenItem {
     @Column(nullable = false)
     private BigDecimal precio_unitario;
 
+    @Column(length = 50)
+    private String observacion;
+
     @ManyToOne
     @JoinColumn(name = "producto_Id")
     private Productos producto;
@@ -34,6 +37,13 @@ public class OrdenItem {
     @ManyToOne
     @JoinColumn(name = "orden_id")
     private Orden orden;
+
+    public OrdenItem(Orden orden, Productos producto, String observacion, int cantidad) {
+        this.orden = orden;
+        this.producto = producto;
+        this.observacion = observacion;
+        this.cantidad = cantidad;
+    }
 
     public OrdenItem(Orden orden, Productos producto, int cantidad) {
         this.orden = orden;

@@ -84,6 +84,7 @@
 ---
 
 ## Sprint 4 – Cocina
+**Estado:** Completado  
 **Objetivo:** Conectar salón y cocina.
 
 ### Historias de Usuario

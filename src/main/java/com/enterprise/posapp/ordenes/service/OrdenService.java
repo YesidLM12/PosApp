@@ -66,8 +66,7 @@ public class OrdenService {
         BigDecimal total = BigDecimal.valueOf(0);
 
         for (OrdenItemRequest it : dto.items()) {
-            Productos producto = productoRepositoryJpa.findById(it.productoId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+            Productos producto = productoRepositoryJpa.findById(it.productoId());
 
             OrdenItem item = OrdenItem.builder()
                     .orden(orden)
@@ -96,12 +95,15 @@ public class OrdenService {
     @Transactional
     public void modificarOrden(OrdenItemRequest item) {
         Orden orden = ordenRepositoryJpa.findById(item.ordenId());
-        Productos producto = productoRepositoryJpa.findById(item.productoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        Productos producto = productoRepositoryJpa.findById(item.productoId());
 
         orden.agregarOActualizarProducto(producto, item.cantidad());
         orden.setEstado(EstadoOrden.EN_PREPARACION);
         ordenRepositoryJpa.save(orden);
+
+        eventPublisher.publishEvent(
+                new OrdenEnviadaACocinaEvent(orden.getId())
+        );
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -27,5 +28,11 @@ public class TicketRepositoryJpa implements TicketRepository {
     @Override
     public List<Ticket> findByEstado(EstadoTicket estado) {
         return ticketJpaRepository.findTicketsByEstado(estado);
+    }
+
+    @Override
+    public Optional<Ticket> findByOrdenId(Long ordenId) {
+        return Optional.of(ticketJpaRepository.findByOrdenId(ordenId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket no encontrado")));
     }
 }

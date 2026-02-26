@@ -29,6 +29,6 @@ public class Mesas {
     @Column(nullable = false)
     private LocalDateTime created_at = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "mesa")
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
     private List<Orden> ordenes;
 }

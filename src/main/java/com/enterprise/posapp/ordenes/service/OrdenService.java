@@ -1,7 +1,6 @@
 package com.enterprise.posapp.ordenes.service;
 
 import com.enterprise.posapp.common.exceptions.ConflicException;
-import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
 import com.enterprise.posapp.mesas.model.enums.Estado;
 import com.enterprise.posapp.mesas.repository.MesaRepositoryJpa;
@@ -11,7 +10,6 @@ import com.enterprise.posapp.ordenes.events.OrdenEnviadaACocinaEvent;
 import com.enterprise.posapp.ordenes.model.entity.Orden;
 import com.enterprise.posapp.ordenes.model.entity.OrdenItem;
 import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
-import com.enterprise.posapp.ordenes.repository.OrdenItemRepositoryJpa;
 import com.enterprise.posapp.ordenes.repository.OrdenRepositoryJpa;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import com.enterprise.posapp.productos.repository.ProductoRepositoryJpa;
@@ -68,12 +66,15 @@ public class OrdenService {
         for (OrdenItemRequest it : dto.items()) {
             Productos producto = productoRepositoryJpa.findById(it.productoId());
 
+            if (!producto.isActivo()) {
+                throw new ConflicException("Producto inactivo: " + producto.getNombre());
+            }
+
             OrdenItem item = OrdenItem.builder()
                     .orden(orden)
                     .producto(producto)
                     .observacion(it.observacion())
                     .cantidad(it.cantidad())
-                    .precio_unitario(producto.getPrecio())
                     .build();
 
             total = total.add(item.calcularSubtotal());
@@ -100,10 +101,6 @@ public class OrdenService {
         orden.agregarOActualizarProducto(producto, item.cantidad());
         orden.setEstado(EstadoOrden.EN_PREPARACION);
         ordenRepositoryJpa.save(orden);
-
-        eventPublisher.publishEvent(
-                new OrdenEnviadaACocinaEvent(orden.getId())
-        );
     }
 
     @Transactional

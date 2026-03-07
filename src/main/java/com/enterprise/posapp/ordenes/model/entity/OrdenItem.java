@@ -24,8 +24,6 @@ public class OrdenItem {
     @Column(nullable = false)
     private int cantidad;
 
-    @Column(nullable = false)
-    private BigDecimal precio_unitario;
 
     @Column(length = 50)
     private String observacion;
@@ -56,7 +54,7 @@ public class OrdenItem {
     }
 
     public BigDecimal calcularSubtotal() {
-        BigDecimal subtotal = precio_unitario.multiply(BigDecimal.valueOf(cantidad));
+        BigDecimal subtotal =producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
 
         if (subtotal.compareTo(BigDecimal.ZERO) < 0) {
             throw new ConflicException("El total no puede ser negativo");

@@ -46,7 +46,7 @@ CREATE TABLE mesas
 );
 
 -- =========================
--- CATEGORIAS
+-- CATEGORÍAS
 -- =========================
 CREATE TABLE categorias
 (
@@ -93,12 +93,11 @@ CREATE TABLE ordenes
 -- =========================
 CREATE TABLE orden_items
 (
-    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    orden_id        BIGINT         NOT NULL,
-    producto_id     BIGINT         NOT NULL,
-    observacion     VARCHAR(50),
-    cantidad        INT            NOT NULL,
-    precio_unitario NUMERIC(10, 2) NOT NULL,
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    orden_id    BIGINT NOT NULL,
+    producto_id BIGINT NOT NULL,
+    observacion VARCHAR(50),
+    cantidad    INT    NOT NULL,
     CONSTRAINT fk_item_orden
         FOREIGN KEY (orden_id) REFERENCES ordenes (id),
     CONSTRAINT fk_item_producto
@@ -117,4 +116,28 @@ CREATE TABLE pagos
     created_at TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_pago_orden
         FOREIGN KEY (orden_id) REFERENCES ordenes (id)
+);
+
+-- ===========================
+-- COCINA
+-- ===========================
+CREATE TABLE ticket
+(
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    orden_id   BIGINT      NOT NULL,
+    estado     VARCHAR(50) NOT NULL,
+    created_at DATETIME    NOT NULL,
+    CONSTRAINT fk_orden
+        FOREIGN KEY (orden_id) REFERENCES ordenes (id)
+);
+
+CREATE TABLE ticket_item
+(
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre_producto VARCHAR(50) NOT NULL,
+    cantidad       INT         NOT NULL,
+    observacion    VARCHAR(255) ,
+    ticket_id      BIGINT      NOT NULL,
+    CONSTRAINT fk_ticket
+        FOREIGN KEY (ticket_id) REFERENCES ticket (id)
 );

@@ -22,9 +22,14 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long ordenId;
-    private List<TicketItem> items;
+
+    @Enumerated(EnumType.STRING)
     private EstadoTicket estado;
+
     private LocalDateTime created_at;
+
+    @OneToMany(mappedBy = "ticket",cascade = CascadeType.ALL)
+    private List<TicketItem> items;
 
     public static Ticket fromOrden(Orden orden) {
         List<TicketItem> items = orden.getItems().stream()

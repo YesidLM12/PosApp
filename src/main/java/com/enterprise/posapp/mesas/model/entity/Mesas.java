@@ -24,6 +24,7 @@ public class Mesas {
     private int numero;
 
     @Column(nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Estado estado;
 
     @Column(nullable = false)

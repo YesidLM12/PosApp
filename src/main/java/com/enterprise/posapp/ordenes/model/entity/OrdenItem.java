@@ -24,8 +24,9 @@ public class OrdenItem {
     @Column(nullable = false)
     private int cantidad;
 
-    @Column(nullable = false)
-    private BigDecimal precio_unitario;
+
+    @Column(length = 50)
+    private String observacion;
 
     @ManyToOne
     @JoinColumn(name = "producto_Id")
@@ -34,6 +35,13 @@ public class OrdenItem {
     @ManyToOne
     @JoinColumn(name = "orden_id")
     private Orden orden;
+
+    public OrdenItem(Orden orden, Productos producto, String observacion, int cantidad) {
+        this.orden = orden;
+        this.producto = producto;
+        this.observacion = observacion;
+        this.cantidad = cantidad;
+    }
 
     public OrdenItem(Orden orden, Productos producto, int cantidad) {
         this.orden = orden;
@@ -46,7 +54,7 @@ public class OrdenItem {
     }
 
     public BigDecimal calcularSubtotal() {
-        BigDecimal subtotal = precio_unitario.multiply(BigDecimal.valueOf(cantidad));
+        BigDecimal subtotal =producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
 
         if (subtotal.compareTo(BigDecimal.ZERO) < 0) {
             throw new ConflicException("El total no puede ser negativo");

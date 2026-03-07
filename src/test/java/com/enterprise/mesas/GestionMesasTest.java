@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -45,12 +46,16 @@ class GestionMesasTest {
 
     @Mock
     private OrdenItemRepositoryJpa ordenItemRepositoryJpa;
+
+    @Mock
+    private  ApplicationEventPublisher eventPublisher;
+
     @InjectMocks
     private OrdenService ordenService;
 
     @Test
     void debePermitirCrearOrdenSiMesaEstaDisponible() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -66,7 +71,7 @@ class GestionMesasTest {
                 .thenReturn(new Usuarios());
 
         when(productoRepositoryJpa.findById(1L))
-                .thenReturn(Optional.of(producto));
+                .thenReturn(producto);
 
         ordenService.crearOrden(dto);
 
@@ -75,7 +80,7 @@ class GestionMesasTest {
 
     @Test
     void noDebeCrearOrdenSiMesaEstaOcupada() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 3L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 3L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -101,7 +106,7 @@ class GestionMesasTest {
 
     @Test
     void debeCambiarEstadoOrdenOcupadaCrearOrden() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -117,7 +122,7 @@ class GestionMesasTest {
                 .thenReturn(new Usuarios());
 
         when(productoRepositoryJpa.findById(1L))
-                .thenReturn(Optional.of(producto));
+                .thenReturn(producto);
 
         ordenService.crearOrden(dto);
 
@@ -128,7 +133,7 @@ class GestionMesasTest {
 
     @Test
     void debeImpedirAsignarMesaEstadoProcesoPago() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();

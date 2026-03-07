@@ -51,8 +51,7 @@ public class ProductoService {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Map<String, String> editarProducto(Long id, ProductoRequest dto) {
-        Productos productoExistente = productoRepositoryJpa.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+        Productos productoExistente = productoRepositoryJpa.findById(id);
 
         try {
             if (dto.nombre() != null) {
@@ -80,8 +79,7 @@ public class ProductoService {
     @Transactional
     public Map<String, String> desactivarProducto(Long productoId) {
         try {
-            Productos producto = productoRepositoryJpa.findById(productoId)
-                    .orElseThrow(() ->  new ResourceNotFoundException("Producto no encontrado"));
+            Productos producto = productoRepositoryJpa.findById(productoId);
 
             producto.desactivarProducto();
             productoRepositoryJpa.save(producto);

@@ -3,6 +3,7 @@ package com.enterprise.posapp.ordenes.model.entity;
 import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
 import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
+import com.enterprise.posapp.pagos.model.entity.Pagos;
 import com.enterprise.posapp.productos.model.entity.Productos;
 import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class Orden {
     private Long id;
 
     @Column(nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private EstadoOrden estado;
 
     @Column(nullable = false)
@@ -55,6 +57,9 @@ public class Orden {
         }
         this.total = total;
     }
+
+    @OneToMany(mappedBy = "orden")
+    private List<Pagos> pagos;
 
     public void agregarOActualizarProducto(Productos producto, int cantidad) {
         abrirOrden();

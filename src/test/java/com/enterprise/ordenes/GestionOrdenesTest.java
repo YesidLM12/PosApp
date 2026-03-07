@@ -50,7 +50,7 @@ class GestionOrdenesTest {
 
     @Test
     void noDebePermitirCrearOrdenSinMesa() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -75,7 +75,7 @@ class GestionOrdenesTest {
 
     @Test
     void noDebePermitirCrearOrdenSinMesero() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -117,7 +117,7 @@ class GestionOrdenesTest {
 
     @Test
     void noDebePermitirModificarOrdenEstadoCerrada() {
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
         OrdenRequest dto = new OrdenRequest(1, "mesero1", List.of(item));
 
         Mesas mesa = new Mesas();
@@ -136,7 +136,7 @@ class GestionOrdenesTest {
                 .thenReturn(orden);
 
         when(productoRepositoryJpa.findById(item.productoId()))
-                .thenReturn(Optional.of(producto));
+                .thenReturn(producto);
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
@@ -150,7 +150,7 @@ class GestionOrdenesTest {
     @Test
     void noDebePermitirReabrirOrdenCancelada() {
 
-        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L);
+        OrdenItemRequest item = new OrdenItemRequest(1L, 1, 1L,"");
 
         Mesas mesa = new Mesas();
         mesa.setEstado(Estado.OCUPADA);
@@ -168,7 +168,7 @@ class GestionOrdenesTest {
                 .thenReturn(orden);
 
         when(productoRepositoryJpa.findById(item.productoId()))
-                .thenReturn(Optional.of(producto));
+                .thenReturn(producto);
 
         ConflicException exception = assertThrows(
                 ConflicException.class,

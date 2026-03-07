@@ -25,6 +25,7 @@ public class Roles {
 	private String codigo;
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Rol nombre;
 
 	private String descripcion;

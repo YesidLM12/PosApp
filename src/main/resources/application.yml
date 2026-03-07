@@ -6,7 +6,6 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: false
-    database-platform: org.hibernate.dialect.MySQLDialect
 
   flyway:
     enabled: true

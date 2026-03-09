@@ -44,7 +44,7 @@ public class AuthService {
         return new LoginResponse(token);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Map<String, String> registrarUsuario(@NonNull UsuarioRequest dto) {
         Usuarios usuarioExistente = usuarioRepositoryJpa.findByUsername(dto.username());

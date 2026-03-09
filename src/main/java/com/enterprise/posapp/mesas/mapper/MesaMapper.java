@@ -7,8 +7,7 @@ public class MesaMapper {
     public static MesaResponse toResponse(Mesas mesa) {
         return new MesaResponse(
                 mesa.getNumero(),
-                mesa.getEstado(),
-                mesa.getCreated_at()
+                mesa.getEstado()
         );
     }
 }

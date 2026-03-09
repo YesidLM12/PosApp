@@ -1,5 +1,6 @@
 package com.enterprise.posapp.mesas.dto.response;
 
+import com.enterprise.posapp.mesas.model.enums.Estado;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,6 @@ public record MesaResponse(
         int numero,
 
         @Schema(description = "Estado de la mesa", example = "Disponible")
-        com.enterprise.posapp.mesas.model.enums.Estado estado,
-
-        @Schema(description = "fecha de creación de mesa", defaultValue = "timeStap")
-        LocalDateTime created_at
+        Estado estado
 ) {
 }

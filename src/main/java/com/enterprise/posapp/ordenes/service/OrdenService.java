@@ -86,7 +86,6 @@ public class OrdenService {
         mesa.setEstado(Estado.OCUPADA);
 
         ordenRepositoryJpa.save(orden);
-        mesaRepositoryJpa.save(mesa);
 
         eventPublisher.publishEvent(
                 new OrdenEnviadaACocinaEvent(orden.getId())

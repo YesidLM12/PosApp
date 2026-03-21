@@ -1,4 +1,8 @@
 package com.enterprise.posapp.ordenes.events;
 
-public record OrdenEnviadaACocinaEvent(Long ordenId) {
+import com.enterprise.posapp.ordenes.model.entity.Orden;
+
+import java.util.List;
+
+public record OrdenEnviadaACocinaEvent(Orden orden) {
 }

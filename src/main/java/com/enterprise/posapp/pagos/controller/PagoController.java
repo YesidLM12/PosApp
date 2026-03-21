@@ -1,6 +1,7 @@
 package com.enterprise.posapp.pagos.controller;
 
 import com.enterprise.posapp.pagos.dto.request.PagoRequest;
+import com.enterprise.posapp.pagos.dto.response.PagoResponse;
 import com.enterprise.posapp.pagos.service.PagoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/pago")
@@ -25,11 +24,9 @@ public class PagoController {
     @Operation(summary = "Pago de orden", description = "Recibe el pago de la orden, y cierra la orden")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pago realizado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Orden no encontrada")
+            @ApiResponse(responseCode = "404", description = "recurso no encontrado")
     })
-    public Map<String, String> pagarOrden(@RequestBody PagoRequest dto) {
-        pagoService.pagarOrden(dto);
-        return Map.of("Mensaje", "Orden pagada y cerrada correctamente");
+    public PagoResponse pagarOrden(@RequestBody PagoRequest dto) {
+        return pagoService.pagarOrden(dto);
     }
-
 }

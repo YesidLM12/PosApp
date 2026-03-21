@@ -1,5 +1,7 @@
 package com.enterprise.posapp.cocina.services;
 
+import com.enterprise.posapp.cocina.dto.ItemTicketResponse;
+import com.enterprise.posapp.cocina.dto.TicketResponse;
 import com.enterprise.posapp.cocina.model.entity.Ticket;
 import com.enterprise.posapp.cocina.model.enums.EstadoTicket;
 import com.enterprise.posapp.cocina.repository.TicketRepositoryJpa;
@@ -8,6 +10,7 @@ import com.enterprise.posapp.ordenes.model.entity.Orden;
 import com.enterprise.posapp.ordenes.model.enums.EstadoOrden;
 import com.enterprise.posapp.ordenes.repository.OrdenRepositoryJpa;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +22,20 @@ public class CocinaService {
     private final OrdenRepositoryJpa ordenRepositoryJpa;
     private final TicketRepositoryJpa ticketRepositoryJpa;
 
-    public List<Ticket> obtenerPendientes() {
-        return ticketRepositoryJpa.findByEstado(EstadoTicket.PENDIENTE);
+    @PreAuthorize("hashRole('COCINA')")
+    public List<TicketResponse> obtenerPendientes() {
+        return ticketRepositoryJpa.findByEstado(EstadoTicket.PENDIENTE).stream()
+                .map(t -> new TicketResponse(
+                        t.getOrden().getCreated_at(),
+                        t.getOrden().getMesa().getNumero(),
+                        t.getOrden().getUsuario().getUsername(),
+                        t.getOrden().getItems().stream()
+                                .map(it -> new ItemTicketResponse(
+                                        it.getProducto().getNombre(),
+                                        it.getCantidad(),
+                                        it.getObservacion()
+                                )).toList()
+                )).toList();
     }
 
     @Transactional
@@ -33,7 +48,7 @@ public class CocinaService {
 
         ticket.setEstado(EstadoTicket.LISTO);
 
-        Orden orden = ordenRepositoryJpa.findById(ticket.getOrdenId());
+        Orden orden = ordenRepositoryJpa.findById(ticket.getOrden().getId());
 
         if (orden.getEstado() != EstadoOrden.EN_PREPARACION) {
             throw new ConflicException("La orden no está en preparación");

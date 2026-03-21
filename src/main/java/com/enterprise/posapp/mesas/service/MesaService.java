@@ -4,6 +4,7 @@ import com.enterprise.posapp.mesas.dto.response.MesaResponse;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
 import com.enterprise.posapp.mesas.repository.MesaRepositoryJpa;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class MesaService {
     private final MesaRepositoryJpa mesaRepositoryJpa;
 
+    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     public List<MesaResponse> getMesas (){
        List<Mesas> mesas =  mesaRepositoryJpa.findAll();
 

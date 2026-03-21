@@ -1,5 +1,6 @@
 package com.enterprise.mesas;
 
+import com.enterprise.posapp.cocina.repository.TicketRepositoryJpa;
 import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
 import com.enterprise.posapp.mesas.model.enums.Estado;
@@ -48,7 +49,10 @@ class GestionMesasTest {
     private OrdenItemRepositoryJpa ordenItemRepositoryJpa;
 
     @Mock
-    private  ApplicationEventPublisher eventPublisher;
+    private TicketRepositoryJpa ticketRepositoryJpa;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private OrdenService ordenService;
@@ -63,6 +67,7 @@ class GestionMesasTest {
 
         Productos producto = new Productos();
         producto.setPrecio(BigDecimal.valueOf(1000));
+        producto.setActivo(true);
 
         when(mesaRepositoryJpa.findByNumberOfMesa(1))
                 .thenReturn(mesa);
@@ -114,6 +119,7 @@ class GestionMesasTest {
 
         Productos producto = new Productos();
         producto.setPrecio(BigDecimal.valueOf(1000));
+        producto.setActivo(true);
 
         when(mesaRepositoryJpa.findByNumberOfMesa(1))
                 .thenReturn(mesa);

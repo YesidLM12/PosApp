@@ -9,6 +9,8 @@ import com.enterprise.posapp.pagos.model.entity.Pagos;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Repository
 @RequiredArgsConstructor
 public class PagoRepositoryJpa implements PagoRepository {
@@ -22,6 +24,11 @@ public class PagoRepositoryJpa implements PagoRepository {
     @Override
     public Page<Pagos> findAll(@NonNull Pageable pageable) {
         return pagoJpaRepository.findAll(pageable);
+    }
+
+    @Override
+    public BigDecimal sumByOrdenId(Long id) {
+        return pagoJpaRepository.sumByOrdenId(id);
     }
 
 }

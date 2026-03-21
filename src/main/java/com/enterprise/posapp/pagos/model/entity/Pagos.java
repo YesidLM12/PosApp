@@ -1,6 +1,5 @@
 package com.enterprise.posapp.pagos.model.entity;
 
-import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.ordenes.model.entity.Orden;
 import com.enterprise.posapp.pagos.model.enums.Metodo;
 import jakarta.persistence.*;

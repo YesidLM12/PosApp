@@ -17,6 +17,7 @@ import com.enterprise.posapp.usuarios.model.entity.Usuarios;
 import com.enterprise.posapp.usuarios.repository.UsuarioRepositoryJpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class OrdenService {
     private final ProductoRepositoryJpa productoRepositoryJpa;
     private final ApplicationEventPublisher eventPublisher;
 
-
+    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void crearOrden(OrdenRequest dto) {
         List<OrdenItem> items = new ArrayList<>();
@@ -54,14 +55,14 @@ public class OrdenService {
         }
 
         Orden orden = Orden
-                .builder()
+                .builder()  
                 .created_at(LocalDateTime.now())
                 .usuario(mesero)
                 .mesa(mesa)
                 .estado(EstadoOrden.ABIERTA)
                 .build();
 
-        BigDecimal total = BigDecimal.valueOf(0);
+        BigDecimal total = BigDecimal.ZERO;
 
         for (OrdenItemRequest it : dto.items()) {
             Productos producto = productoRepositoryJpa.findById(it.productoId());
@@ -88,10 +89,11 @@ public class OrdenService {
         ordenRepositoryJpa.save(orden);
 
         eventPublisher.publishEvent(
-                new OrdenEnviadaACocinaEvent(orden.getId())
+                new OrdenEnviadaACocinaEvent(orden)
         );
     }
 
+    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void modificarOrden(OrdenItemRequest item) {
         Orden orden = ordenRepositoryJpa.findById(item.ordenId());
@@ -102,6 +104,7 @@ public class OrdenService {
         ordenRepositoryJpa.save(orden);
     }
 
+    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void cancelarOrden(Long ordenId) {
         Orden orden = ordenRepositoryJpa.findById(ordenId);
@@ -109,6 +112,7 @@ public class OrdenService {
         ordenRepositoryJpa.save(orden);
     }
 
+    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void cerrarOrden(Long ordenId) {
         Orden orden = ordenRepositoryJpa.findById(ordenId);

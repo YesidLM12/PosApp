@@ -36,7 +36,6 @@ public class Orden {
     @Column(nullable = false)
     private LocalDateTime created_at;
 
-    @Column(nullable = false)
     private LocalDateTime closed_at;
 
     @ManyToOne

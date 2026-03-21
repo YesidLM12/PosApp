@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 @RequiredArgsConstructor
 public class UsuarioRepositoryJpa implements UsuarioRepository {
@@ -37,5 +35,9 @@ public class UsuarioRepositoryJpa implements UsuarioRepository {
     @Override
     public Usuarios findByUsername(String username) {
         return jpaRepository.findByUsername(username);
+    }
+
+    public long count(){
+        return jpaRepository.count();
     }
 }

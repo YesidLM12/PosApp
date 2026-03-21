@@ -130,14 +130,3 @@ CREATE TABLE ticket
     CONSTRAINT fk_orden
         FOREIGN KEY (orden_id) REFERENCES ordenes (id)
 );
-
-CREATE TABLE ticket_item
-(
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre_producto VARCHAR(50) NOT NULL,
-    cantidad       INT         NOT NULL,
-    observacion    VARCHAR(255) ,
-    ticket_id      BIGINT      NOT NULL,
-    CONSTRAINT fk_ticket
-        FOREIGN KEY (ticket_id) REFERENCES ticket (id)
-);

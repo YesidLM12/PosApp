@@ -80,6 +80,7 @@ public class Orden {
                 agregarItem(nuevoItem);
             }
         }
+        recalcularTotal();
     }
 
     public void validarOrden() {
@@ -117,5 +118,12 @@ public class Orden {
 
         setEstado(EstadoOrden.CERRADA);
         setClosed_at(LocalDateTime.now());
+    }
+
+    public void recalcularTotal() {
+        this.total = items.stream()
+                .map(item -> item.getProducto().getPrecio()
+                        .multiply(BigDecimal.valueOf(item.getCantidad())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

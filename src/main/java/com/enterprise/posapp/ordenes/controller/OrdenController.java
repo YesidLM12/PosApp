@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,13 +34,13 @@ public class OrdenController {
         return Map.of("Mensaje", "Orden creada");
     }
 
-    @PatchMapping
+    @PatchMapping("{ordenId}")
     @Operation(summary = "Modificar orden", description = "Modifica la cantidad de productos y/o elimina productos ")
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "Item modificado"),
             @ApiResponse(responseCode = "404", description = "Recurso no encontrado")
     })
-    public void modificarOrden(@RequestBody OrdenItemRequest dto) {
-        ordenService.modificarOrden(dto);
+    public void modificarOrden(@PathVariable Long ordenId ,@RequestBody List<OrdenItemRequest> dto) {
+        ordenService.modificarOrden(ordenId,dto);
     }
 }

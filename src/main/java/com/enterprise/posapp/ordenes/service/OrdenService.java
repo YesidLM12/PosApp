@@ -37,7 +37,7 @@ public class OrdenService {
 
     @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
-    public void crearOrden(OrdenRequest dto) {
+    public Orden crearOrden(OrdenRequest dto) {
         List<OrdenItem> items = new ArrayList<>();
 
         Usuarios mesero = usuarioRepositoryJpa.findByUsername(dto.mesero());
@@ -55,7 +55,7 @@ public class OrdenService {
         }
 
         Orden orden = Orden
-                .builder()  
+                .builder()
                 .created_at(LocalDateTime.now())
                 .usuario(mesero)
                 .mesa(mesa)
@@ -91,15 +91,19 @@ public class OrdenService {
         eventPublisher.publishEvent(
                 new OrdenEnviadaACocinaEvent(orden)
         );
+        return orden;
     }
 
     @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
     @Transactional
-    public void modificarOrden(OrdenItemRequest item) {
-        Orden orden = ordenRepositoryJpa.findById(item.ordenId());
-        Productos producto = productoRepositoryJpa.findById(item.productoId());
+    public void modificarOrden(Long ordenId, List<OrdenItemRequest> items) {
+        Orden orden = ordenRepositoryJpa.findById(ordenId);
 
-        orden.agregarOActualizarProducto(producto, item.cantidad());
+        for (OrdenItemRequest o : items) {
+            Productos producto = productoRepositoryJpa.findById(o.productoId());
+            orden.agregarOActualizarProducto(producto, o.cantidad());
+        }
+
         orden.setEstado(EstadoOrden.EN_PREPARACION);
         ordenRepositoryJpa.save(orden);
     }

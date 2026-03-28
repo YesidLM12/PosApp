@@ -49,9 +49,6 @@ public class OrdenItem {
         this.cantidad = cantidad;
     }
 
-    public void actualizarCantidad(int cantidad) {
-        setCantidad(cantidad);
-    }
 
     public BigDecimal calcularSubtotal() {
         BigDecimal subtotal =producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
@@ -60,5 +57,9 @@ public class OrdenItem {
             throw new ConflicException("El total no puede ser negativo");
         }
         return subtotal;
+    }
+
+    public void actualizarCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

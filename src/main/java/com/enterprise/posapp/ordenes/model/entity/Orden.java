@@ -122,6 +122,7 @@ public class Orden {
 
     public void recalcularTotal() {
         this.total = items.stream()
+                .filter(item -> item.getProducto() != null)
                 .map(item -> item.getProducto().getPrecio()
                         .multiply(BigDecimal.valueOf(item.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

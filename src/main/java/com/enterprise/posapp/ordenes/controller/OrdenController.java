@@ -30,7 +30,11 @@ public class OrdenController {
             @ApiResponse(responseCode = "409", description = "Mesa no disponible")
     })
     public Map<String, String> crearOrden (@RequestBody OrdenRequest dto) {
-        ordenService.crearOrden(dto);
+        try {
+            ordenService.crearOrden(dto);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
         return Map.of("Mensaje", "Orden creada");
     }
 

@@ -24,13 +24,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,7 @@ class GestionOrdenesTest {
 
     @Mock
     private OrdenItemRepositoryJpa ordenItemRepositoryJpa;
-    @ Mock
+    @Mock
     private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
@@ -74,8 +75,7 @@ class GestionOrdenesTest {
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
-                () -> ordenService.crearOrden(dto)
-        );
+                () -> ordenService.crearOrden(dto));
         System.out.println(exception.getMessage());
         verify(ordenRepositoryJpa, never()).save(any());
     }
@@ -96,8 +96,7 @@ class GestionOrdenesTest {
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
-                () -> ordenService.crearOrden(dto)
-        );
+                () -> ordenService.crearOrden(dto));
         System.out.println(exception.getMessage());
         verify(ordenRepositoryJpa, never()).save(any());
     }
@@ -146,8 +145,7 @@ class GestionOrdenesTest {
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
-                () -> ordenService.modificarOrden(orden.getId(),List.of(item))
-        );
+                () -> ordenService.modificarOrden(orden.getId(), List.of(item)));
 
         System.out.println(exception.getMessage());
         verify(ordenRepositoryJpa, never()).save(any());
@@ -178,8 +176,7 @@ class GestionOrdenesTest {
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
-                () -> ordenService.modificarOrden(orden.getId(),List.of(item))
-        );
+                () -> ordenService.modificarOrden(orden.getId(), List.of(item)));
 
         System.out.println(exception.getMessage());
 
@@ -213,8 +210,7 @@ class GestionOrdenesTest {
 
         ConflicException exception = assertThrows(
                 ConflicException.class,
-                () -> ordenService.crearOrden(ordenRequest)
-        );
+                () -> ordenService.crearOrden(ordenRequest));
         System.out.println(exception.getMessage());
         verify(productoRepositoryJpa, never()).save(any());
     }
@@ -314,7 +310,7 @@ class GestionOrdenesTest {
         when(ordenRepositoryJpa.findById(1L))
                 .thenReturn(orden);
 
-        ordenService.modificarOrden(orden.getId(),List.of(item3));
+        ordenService.modificarOrden(orden.getId(), List.of(item3));
 
         assertEquals(BigDecimal.valueOf(90000), orden.getTotal());
 
@@ -364,11 +360,101 @@ class GestionOrdenesTest {
         when(ordenRepositoryJpa.findById(1L))
                 .thenReturn(orden);
 
-        ordenService.modificarOrden(orden.getId(),List.of(item2));
+        ordenService.modificarOrden(orden.getId(), List.of(item2));
 
         assertEquals(BigDecimal.valueOf(20000), orden.getTotal());
 
         verify(ordenRepositoryJpa, times(2)).save(any(Orden.class));
         System.out.println("Test completado!");
+    }
+
+    @Test
+    void debeRecalcularElTotalOrdenCambiaCantidad() {
+        Usuarios mesero = new Usuarios();
+        mesero.setUsername("mesero1");
+
+        Mesas mesa = new Mesas();
+        mesa.setEstado(Estado.DISPONIBLE);
+        mesa.setNumero(1);
+
+        Productos producto1 = new Productos();
+        producto1.setId(1L);
+        producto1.setActivo(true);
+        producto1.setPrecio(BigDecimal.valueOf(20000));
+
+        Productos producto2 = new Productos();
+        producto2.setId(2L);
+        producto2.setActivo(true);
+        producto2.setPrecio(BigDecimal.valueOf(30000));
+
+        Productos producto3 = new Productos();
+        producto3.setId(3L);
+        producto3.setActivo(true);
+        producto3.setPrecio(BigDecimal.valueOf(40000));
+
+        OrdenItem item = new OrdenItem();
+        item.setId(1L);
+        item.setCantidad(1);
+        item.setProducto(producto1);
+        item.setObservacion("");
+
+        OrdenItem item2 = new OrdenItem();
+        item2.setId(2L);
+        item2.setCantidad(1);
+        item2.setProducto(producto2);
+        item2.setObservacion("");
+
+        Orden orden = Orden.builder()
+                .id(1L)
+                .usuario(mesero)
+                .estado(EstadoOrden.ABIERTA)
+                .mesa(mesa)
+                .items(List.of(item, item2))
+                .created_at(LocalDateTime.now())
+                .build();
+
+        when(ordenRepositoryJpa.findById(1L))
+                .thenReturn(orden);
+
+        when(productoRepositoryJpa.findById(2L))
+                .thenReturn(producto2);
+
+        OrdenItemRequest itemR = new OrdenItemRequest(1L, 1, producto2.getId(), "");
+
+        ordenService.modificarOrden(orden.getId(), List.of(itemR));
+
+        assertEquals(BigDecimal.valueOf(80000), orden.getTotal());
+
+        verify(ordenRepositoryJpa).save(any(Orden.class));
+    }
+
+    @Test
+    void noDebeAceptarTotalesNegativos() {
+        OrdenItemRequest item = new OrdenItemRequest(1L, -1, 1L, "");
+
+        OrdenRequest ordenRequest = new OrdenRequest(1, "mesero1", List.of(item));
+
+        Mesas mesa = new Mesas();
+        mesa.setEstado(Estado.DISPONIBLE);
+
+        Usuarios mesero = new Usuarios();
+        mesero.setUsername("mesero1");
+
+        Productos producto = new Productos();
+        producto.setId(1L);
+        producto.setActivo(true);
+        producto.setPrecio(BigDecimal.valueOf(20000));
+
+        when(mesaRepositoryJpa.findByNumberOfMesa(1)).thenReturn(mesa);
+        when(usuarioRepositoryJpa.findByUsername("mesero1")).thenReturn(mesero);
+        when(productoRepositoryJpa.findById(1L)).thenReturn(producto);
+
+        ConflicException exception = assertThrows(
+                ConflicException.class,
+                () -> ordenService.crearOrden(ordenRequest));
+
+        System.out.println(exception.getMessage());
+
+        verify(ordenRepositoryJpa, never()).save(any());
     }
 }

@@ -60,6 +60,14 @@ public class OrdenItem {
     }
 
     public void actualizarCantidad(int cantidad) {
-        this.cantidad = cantidad;
+        if (cantidad == 0){
+            return;
+        }
+
+        this.cantidad += cantidad;
+
+        if (this.cantidad < 0){
+            this.cantidad = 0;
+        }
     }
 }

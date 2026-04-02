@@ -3,6 +3,7 @@ package com.enterprise.posapp.pagos.service;
 import com.enterprise.posapp.cocina.model.entity.Ticket;
 import com.enterprise.posapp.cocina.model.enums.EstadoTicket;
 import com.enterprise.posapp.cocina.repository.TicketRepositoryJpa;
+import com.enterprise.posapp.common.exceptions.ConflicException;
 import com.enterprise.posapp.common.exceptions.ResourceNotFoundException;
 import com.enterprise.posapp.mesas.model.entity.Mesas;
 import com.enterprise.posapp.mesas.model.enums.Estado;
@@ -31,10 +32,18 @@ public class PagoService {
     private final MesaRepositoryJpa mesaRepositoryJpa;
     private final TicketRepositoryJpa ticketRepositoryJpa;
 
-    @PreAuthorize("hashRole('CAJERO')")
+    @PreAuthorize("hashRole('CAJERO'")
     @Transactional
     public PagoResponse pagarOrden(PagoRequest dto) {
         Orden orden = ordenRepositoryJpa.findById(dto.ordenId());
+
+        if (orden.getTotal() == null) {
+            throw new ConflicException("La orden no puede tener total null");
+        }
+
+        if (orden.getEstado() != EstadoOrden.ABIERTA && orden.getEstado() != EstadoOrden.SERVIDA) {
+            throw new ConflicException("No se puede modificar la orden.Estado de la orden: " + orden.getEstado());
+        }
 
         Pagos pago = Pagos.builder()
                 .orden(orden)
@@ -62,6 +71,8 @@ public class PagoService {
                     .orElseThrow(() -> new ResourceNotFoundException("Ticket no encontrado"));
             ticket.setEstado(EstadoTicket.LISTO);
             ticketRepositoryJpa.save(ticket);
+        } else {
+            throw new ConflicException("Pago incompleto. Monto a pagar: " + orden.getTotal() + "  Restante: " + restante + " Estado Orden: " + orden.getEstado());
         }
 
         return new PagoResponse(

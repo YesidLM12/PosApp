@@ -22,7 +22,7 @@ public class CocinaService {
     private final OrdenRepositoryJpa ordenRepositoryJpa;
     private final TicketRepositoryJpa ticketRepositoryJpa;
 
-    @PreAuthorize("hashRole('COCINA')")
+    @PreAuthorize("hasRole('COCINA')")
     public List<TicketResponse> obtenerPendientes() {
         return ticketRepositoryJpa.findByEstado(EstadoTicket.PENDIENTE).stream()
                 .map(t -> new TicketResponse(

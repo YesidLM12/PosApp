@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/orden")
 @RequiredArgsConstructor
-@Tag(name = "Ordenes" , description = "Gestión de ordenes y envío de tickets a cocina")
+@Tag(name = "Ordenes", description = "Gestión de ordenes y envío de tickets a cocina")
 public class OrdenController {
     private final OrdenService ordenService;
 
@@ -29,18 +29,42 @@ public class OrdenController {
             @ApiResponse(responseCode = "404", description = "producto no encontrado"),
             @ApiResponse(responseCode = "409", description = "Mesa no disponible")
     })
-    public Map<String, String> crearOrden (@RequestBody OrdenRequest dto) {
-        ordenService.crearOrden(dto);
+    public Map<String, String> crearOrden(@RequestBody OrdenRequest dto) {
+        try {
+            ordenService.crearOrden(dto);
+        } catch (Exception e) {
+            System.out.println("Error al crear orden: " + e.getMessage());
+        }
         return Map.of("Mensaje", "Orden creada");
     }
 
-    @PatchMapping("{ordenId}")
+    @PatchMapping("/{ordenId}")
     @Operation(summary = "Modificar orden", description = "Modifica la cantidad de productos y/o elimina productos ")
     @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "Item modificado"),
+            @ApiResponse(responseCode = "200", description = "Item modificado"),
             @ApiResponse(responseCode = "404", description = "Recurso no encontrado")
     })
-    public void modificarOrden(@PathVariable Long ordenId ,@RequestBody List<OrdenItemRequest> dto) {
-        ordenService.modificarOrden(ordenId,dto);
+    public void modificarOrden(@PathVariable Long ordenId, @RequestBody List<OrdenItemRequest> dto) {
+        try {
+            ordenService.modificarOrden(ordenId, dto);
+        } catch (Exception e) {
+            System.out.println("Error al modificar orden: " + e.getMessage());
+        }
     }
+
+    @PutMapping("/{ordenId}")
+    @Operation(summary = "Cancelar orden", description = "Cancela la orden y mantiene el historial")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Orden no encontrada"),
+            @ApiResponse(responseCode = "200", description = "Orden cancelada")
+    })
+    public Map<String, String> cancelarOrden(@PathVariable Long ordenId) {
+        try {
+            ordenService.cancelarOrden(ordenId);
+        } catch (Exception e) {
+            System.out.println("Error al cancelar orden: " + e.getMessage());
+        }
+        return Map.of("Mensaje", "Orden cancelada");
+    }
+
 }

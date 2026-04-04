@@ -42,13 +42,15 @@ public class Orden {
     @JoinColumn(name = "mesa_id", nullable = false)
     private Mesas mesa;
 
-
     @ManyToOne
     @JoinColumn(name = "mesero_id", nullable = false)
     private Usuarios usuario;
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<OrdenItem> items;
+
+    @OneToMany(mappedBy = "orden")
+    private List<Pagos> pagos;
 
     public void setTotal(BigDecimal total) {
         if (total.compareTo(BigDecimal.ZERO) < 0) {
@@ -57,8 +59,6 @@ public class Orden {
         this.total = total;
     }
 
-    @OneToMany(mappedBy = "orden")
-    private List<Pagos> pagos;
 
     public void agregarOActualizarProducto(Productos producto, int cantidad) {
         abrirOrden();
@@ -122,6 +122,7 @@ public class Orden {
 
     public void recalcularTotal() {
         this.total = items.stream()
+                .filter(item -> item.getProducto() != null)
                 .map(item -> item.getProducto().getPrecio()
                         .multiply(BigDecimal.valueOf(item.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

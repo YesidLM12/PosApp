@@ -1,0 +1,24 @@
+Spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/posapp_test
+    username: root
+    password: Chingatumadre1*
+
+  Jpa:
+    show-sql: true
+    Hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  docker:
+    compose:
+      file: docker-compose.yml
+      lifecycle-management: start-and-stop
+
+jwt:
+  secret: test-secret-key-para-pruebas-de-integracion-posapp-2024
+  expiration: 3600000
+

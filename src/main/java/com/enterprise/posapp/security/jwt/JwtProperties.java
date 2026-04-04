@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @ConfigurationProperties(prefix = "jwt")
 @EnableConfigurationProperties(JwtProperties.class)
-@Profile("!test")
+//@Profile("!test")
 public class JwtProperties {
     private String secret;
     private long expiration;

@@ -2,6 +2,7 @@ package com.enterprise.posapp.ordenes.repository;
 
 import com.enterprise.posapp.ordenes.model.entity.Orden;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrdenRepository {
@@ -10,4 +11,6 @@ public interface OrdenRepository {
     Orden findById(long ordenId);
 
     Optional<Orden> findByWithItems(Long id);
+
+    List<Orden> findAll();
 }

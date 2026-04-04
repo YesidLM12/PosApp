@@ -35,7 +35,7 @@ public class OrdenService {
     private final ProductoRepositoryJpa productoRepositoryJpa;
     private final ApplicationEventPublisher eventPublisher;
 
-    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
+    @PreAuthorize("hasAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public Orden crearOrden(OrdenRequest dto) {
         List<OrdenItem> items = new ArrayList<>();
@@ -94,7 +94,7 @@ public class OrdenService {
         return orden;
     }
 
-    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
+    @PreAuthorize("hasAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void modificarOrden(Long ordenId, List<OrdenItemRequest> items) {
         Orden orden = ordenRepositoryJpa.findById(ordenId);
@@ -108,15 +108,18 @@ public class OrdenService {
         ordenRepositoryJpa.save(orden);
     }
 
-    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
+    @PreAuthorize("hasAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void cancelarOrden(Long ordenId) {
         Orden orden = ordenRepositoryJpa.findById(ordenId);
+        Mesas mesa = orden.getMesa();
+        mesa.setEstado(Estado.DISPONIBLE);
         orden.cancelarOrden();
+        mesaRepositoryJpa.save(mesa);
         ordenRepositoryJpa.save(orden);
     }
 
-    @PreAuthorize("hashAnyRole('MESERO', 'CAJERO')")
+    @PreAuthorize("hasAnyRole('MESERO', 'CAJERO')")
     @Transactional
     public void cerrarOrden(Long ordenId) {
         Orden orden = ordenRepositoryJpa.findById(ordenId);

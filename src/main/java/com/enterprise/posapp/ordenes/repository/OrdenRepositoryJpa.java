@@ -7,6 +7,7 @@ import com.enterprise.posapp.ordenes.model.entity.Orden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,10 @@ public class OrdenRepositoryJpa implements OrdenRepository {
     @Override
     public Optional<Orden> findByWithItems(Long id) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<Orden> findAll() {
+        return ordenJpaRepository.findAll();
     }
 }

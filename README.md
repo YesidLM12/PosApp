@@ -180,6 +180,6 @@ Futuras mejoras:
 
 En desarrollo.
 
-Actualmente se encuentra implementando el módulo de cocina y flujo de órdenes.
+Actualmente se encuentra en estabilización y desarrollo de pruebas de integración
 
 ---
